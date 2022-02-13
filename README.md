@@ -1,16 +1,26 @@
-# chat_app
+# Chat-App
 
-A new Flutter application.
+This project is a beta version of a simplified but function chat application build in Flutter and Firebase.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+The link below contains the apk of a beta version of the application. Currently the application can be run in Android devices.
 
-A few resources to get you started if this is your first Flutter project:
+[APK](https://drive.google.com/file/d/1f_Ghc1I9r6UiOlj49gbKU9URzZB5uVTO/view?usp=sharing)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### How to use
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Users can create a new account by entering their personal information.
+- Users can log in to the applicaiton using a valid email and password.
+- Users have the ability to initiate conversations with other registered users.
+
+
+![273531879_1002764950447798_930470366695070694_n](https://user-images.githubusercontent.com/99279342/153778571-182ba6d8-0891-47f8-a754-970e7fcfe9ef.jpg)
+
+
+
+
+## Built with
+
+* [Flutter 2.1](https://flutter.dev/?gclid=CjwKCAiA6Y2QBhAtEiwAGHybPcVyifrnxlpAIyg2l9Oaow79u_W2-IJoxEPYWu8zdTVh0qYXMAEtvxoC2LUQAvD_BwE&gclsrc=aw.ds)
+* [Firebase](https://firebase.google.com)
