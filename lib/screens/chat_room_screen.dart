@@ -18,12 +18,17 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
-  bool roomExists = false;
+
+  //contains the text that is being typed
   String chatText = '';
+  //this focus node is responsible for closing the keyboard and un-focusing from the text field
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    // room1 and room2 are responsible for fetching the chat room that is connected between users
+    // a chat room is create with an id that is the combination of the id the 2 users have, so it can either be user1.id+user2.id or user2.id+user1.id
+    // that means we need to check the chatRoom collection for 2 ids each time in order to check whether the chat room pre exists and snatch the data
     var room1 = FirebaseFirestore.instance
         .collection('chatRoom')
         .doc(widget.activeUser.uid + widget.secondaryUser.uid)
@@ -41,6 +46,7 @@ class _ChatRoomState extends State<ChatRoom> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final data = snapshot.data!;
+            //if the first reference contains data it means we can create the object with the appropriate data
             if (data.exists) {
               ChatRoomData chatRoom =
                   ChatRoomData(uid: data['uid'], chat: data['chat']);
@@ -51,12 +57,15 @@ class _ChatRoomState extends State<ChatRoom> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var data = snapshot.data!;
+                      //if the first reference does not contain any data we check the second reference
                       if (data.exists) {
+                        //if the second reference contains data it means we can create the object with the appropriate data
                         ChatRoomData chatRoom =
                             ChatRoomData(uid: data['uid'], chat: data['chat']);
                         return getChatBody(
                             screenWidth, screenHeight, chatRoom, time);
                       } else {
+                        //if neither of the references contain data it means the chat room between the 2 users has not been created yet
                         createChatRoom();
                         ChatRoomData chatRoom = ChatRoomData(uid: '', chat: []);
                         return getChatBody(
@@ -227,6 +236,7 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
+  //this method is responsible for clearing any with space before and after the beginning of the message
   void clearChatTextWhiteSpace() {
     setState(() {
       chatText = chatText.trimLeft();
@@ -287,12 +297,14 @@ class _ChatRoomState extends State<ChatRoom> {
     );
   }
 
+  //we create the chat room between the 2 users, the id for the document is the combination of the if of the 2 users
   Future<void> createChatRoom() async {
     List chat = [];
     await DatabaseService.fromDatabaseServiceChatRooms(
             uid1: widget.activeUser.uid, uid2: widget.secondaryUser.uid)
         .updateChatRoomData(chat);
   }
+
 
   void manageMessageData(chatRoom,time) {
     clearChatTextWhiteSpace();
@@ -303,6 +315,7 @@ class _ChatRoomState extends State<ChatRoom> {
         "user": widget.activeUser.uid,
         "time": time
       });
+      //update the chat room with the proper id
       if (chatRoom.uid ==
           widget.activeUser.uid + widget.secondaryUser.uid) {
         DatabaseService.fromDatabaseServiceChatRooms(
@@ -315,6 +328,7 @@ class _ChatRoomState extends State<ChatRoom> {
             uid2: widget.activeUser.uid)
             .updateChatRoomData(chatRoom.chat);
       }
+      //clear the text field information once the message is sent
       setState(() {
         chatText = '';
         _controller.clear();

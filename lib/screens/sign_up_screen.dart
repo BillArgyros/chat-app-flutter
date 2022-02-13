@@ -219,6 +219,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _signUpButton(context, screenWidth, screenHeight) {
+    print('im here');
+
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: Container(
