@@ -34,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
               if (snapshot.hasData) {
                 final data = snapshot.data!;
                 userList = createUserList(data);
+                var activeUserIndex = userList.indexWhere((element) => element.uid==user.uid);
+                var activeUser=userList[activeUserIndex];
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
                   home: Scaffold(
@@ -42,9 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10.0,left: 10),
-                              child: Text('Chat App',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                             Padding(
+                              padding: const EdgeInsets.only(top: 10.0,left: 10),
+                              child: Text('Welcome ' + userList[activeUserIndex].name,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                             ),
                             _signOutButton(
                                 context, screenWidth, screenHeight),
@@ -65,8 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Card(
                                       child: TextButton(
                                         onPressed: () {
-                                          var activeUserIndex = userList.indexWhere((element) => element.uid==user.uid);
-                                          var activeUser=userList[activeUserIndex];
+
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: (context) => ChatRoom(activeUser: activeUser, secondaryUser: userList[index],)),

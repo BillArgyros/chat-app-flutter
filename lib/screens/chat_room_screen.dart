@@ -20,9 +20,8 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   bool roomExists = false;
   String chatText = '';
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = new TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var room1 = FirebaseFirestore.instance
@@ -102,13 +101,11 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   _textFieldFormat(BuildContext context, double screenWidth,
-      double screenHeight, chatRoomData, time) {
+      double screenHeight, chatRoom, time) {
     return Container(
       child: Padding(
         padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
         child: SizedBox(
-          // width: screenWidth * 0.8,
-          //height: screenHeight*0.09,
           child: TextFormField(
             controller: _controller,
             onChanged: (text) => chatText = text,
@@ -118,31 +115,7 @@ class _ChatRoomState extends State<ChatRoom> {
             decoration: InputDecoration(
               suffixIcon: IconButton(
                 onPressed: () {
-                  clearChatTextWhiteSpace();
-                  if (chatText.isNotEmpty) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    chatRoomData.chat.add({
-                      "message": chatText,
-                      "user": widget.activeUser.uid,
-                      "time": time
-                    });
-                    if (chatRoomData.uid ==
-                        widget.activeUser.uid + widget.secondaryUser.uid) {
-                      DatabaseService.fromDatabaseServiceChatRooms(
-                              uid1: widget.activeUser.uid,
-                              uid2: widget.secondaryUser.uid)
-                          .updateChatRoomData(chatRoomData.chat);
-                    } else {
-                      DatabaseService.fromDatabaseServiceChatRooms(
-                              uid1: widget.secondaryUser.uid,
-                              uid2: widget.activeUser.uid)
-                          .updateChatRoomData(chatRoomData.chat);
-                    }
-                    setState(() {
-                      chatText = '';
-                      _controller.clear();
-                    });
-                  }
+                  manageMessageData(chatRoom,time);
                 },
                 icon: const Icon(Icons.send),
               ),
@@ -172,6 +145,7 @@ class _ChatRoomState extends State<ChatRoom> {
         .toList();
   }
 
+
   getChatBubbles(chatBubble, double screenWidth, double screenHeight,
       BuildContext context) {
     if (chatBubble['user'] == widget.activeUser.uid) {
@@ -182,27 +156,21 @@ class _ChatRoomState extends State<ChatRoom> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              InkWell(
-                onTap: () {
-                  chatBubble['isPressed'] = !chatBubble['isPressed'];
-                  print(chatBubble['isPressed']);
-                },
-                child: Container(
-                  constraints:
-                      BoxConstraints(minWidth: 0, maxWidth: screenWidth * 0.6),
-                  decoration: BoxDecoration(
-                      color: Colors.lightBlueAccent,
-                      borderRadius: BorderRadius.circular(32),
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1,
-                      )),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      chatBubble['message'],
-                      style: const TextStyle(fontSize: 18),
-                    ),
+              Container(
+                constraints:
+                    BoxConstraints(minWidth: 0, maxWidth: screenWidth * 0.6),
+                decoration: BoxDecoration(
+                    color: Colors.lightBlueAccent,
+                    borderRadius: BorderRadius.circular(32),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    )),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    chatBubble['message'],
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ),
               ),
@@ -324,5 +292,33 @@ class _ChatRoomState extends State<ChatRoom> {
     await DatabaseService.fromDatabaseServiceChatRooms(
             uid1: widget.activeUser.uid, uid2: widget.secondaryUser.uid)
         .updateChatRoomData(chat);
+  }
+
+  void manageMessageData(chatRoom,time) {
+    clearChatTextWhiteSpace();
+    if (chatText.isNotEmpty) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      chatRoom.chat.add({
+        "message": chatText,
+        "user": widget.activeUser.uid,
+        "time": time
+      });
+      if (chatRoom.uid ==
+          widget.activeUser.uid + widget.secondaryUser.uid) {
+        DatabaseService.fromDatabaseServiceChatRooms(
+            uid1: widget.activeUser.uid,
+            uid2: widget.secondaryUser.uid)
+            .updateChatRoomData(chatRoom.chat);
+      } else {
+        DatabaseService.fromDatabaseServiceChatRooms(
+            uid1: widget.secondaryUser.uid,
+            uid2: widget.activeUser.uid)
+            .updateChatRoomData(chatRoom.chat);
+      }
+      setState(() {
+        chatText = '';
+        _controller.clear();
+      });
+    }
   }
 }
