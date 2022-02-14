@@ -1,6 +1,6 @@
 # Chat-App
 
-This project is a beta version of a simplified but function chat application build in Flutter and Firebase.
+This project is a beta version of a simplified but functional chat application build in Flutter and Firebase.
 
 ## Getting Started
 
