@@ -16,9 +16,10 @@ The link below contains the apk of a beta version of the application. Currently 
 - Users can see a list of the chat rooms that they are sharing with other users.
 
 
-![274946911_287005883546741_2886747099459493560_n](https://user-images.githubusercontent.com/99279342/156077082-70cb9004-385d-46cc-bc85-9bc2d2a70df4.jpg)
+![274638188_1134875343980069_8232594341391862731_n](https://user-images.githubusercontent.com/99279342/156267048-ed7236e4-6453-425b-83c7-3f24c5971144.jpg)
 
-![274772166_1344662032716437_2492239704026764182_n](https://user-images.githubusercontent.com/99279342/156077096-cfff70d2-e8a2-42f4-ba39-c9bf1d6e8cee.jpg)
+![274707489_630041798057808_3371818477052805207_n](https://user-images.githubusercontent.com/99279342/156267062-98b1cee0-8372-49e8-9c8d-d57c54b0cccc.jpg)
+
 
 
 
