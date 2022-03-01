@@ -29,7 +29,6 @@ class AuthServices {
 
       return _userFromUserCredential(user);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
