@@ -1,18 +1,20 @@
-
-class UserModel{
+class UserModel {
   final String uid;
 
   UserModel({required this.uid});
 }
 
-class UserData{
+class UserData {
+  String uid;
+  String name;
+  String email;
+  String password;
+  List chatRooms;
 
-   String uid;
-   String name;
-   String email;
-   String password;
-   List chatRooms;
-
-   UserData({required this.email, required this.uid ,required this.password,required this.name, required this.chatRooms});
-
+  UserData(
+      {required this.email,
+      required this.uid,
+      required this.password,
+      required this.name,
+      required this.chatRooms});
 }

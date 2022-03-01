@@ -29,7 +29,8 @@ class _ChatRoomState extends State<ChatRoom> {
   //contains the text that is being typed
   String chatText = '';
 
-  //this focus node is responsible for closing the keyboard and un-focusing from the text field
+  //this focus node is responsible for closing the keyboard and un-focusing
+  // from the text field
   late String chatRoomId;
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
@@ -42,8 +43,8 @@ class _ChatRoomState extends State<ChatRoom> {
     var screenHeight = MediaQuery.of(context).size.height;
     DateTime now = DateTime.now();
     String time = DateFormat.Hm().format(now);
+    //find the correct collection document for the specific chat room
     var room = getChatRoomCollection();
-
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: room,
         builder: (context, snapshot) {
@@ -65,7 +66,7 @@ class _ChatRoomState extends State<ChatRoom> {
         style: const TextStyle(color: Colors.black),
       ),
       elevation: 10,
-      backgroundColor: Color.fromARGB(253, 170, 5, 19),
+      backgroundColor: const Color.fromARGB(253, 170, 5, 19),
       bottom: PreferredSize(
           child: Container(
             decoration: const BoxDecoration(
@@ -75,9 +76,7 @@ class _ChatRoomState extends State<ChatRoom> {
           preferredSize: const Size.fromHeight(0.0)),
       leading: IconButton(
         onPressed: () {
-          //Navigator.popUntil(context, ModalRoute.withName ('/'));
           Navigator.pop(context);
-          //Navigator.pop(context);
         },
         icon: const Icon(
           Icons.arrow_back_ios,
@@ -103,6 +102,7 @@ class _ChatRoomState extends State<ChatRoom> {
             suffixIcon: InkWell(
               splashColor: Colors.transparent,
               onTap: () {
+                //when the icon is pressed sent the data to the database
                 manageMessageData(chatRoom, time);
               },
               child: const Icon(Icons.send),
@@ -134,6 +134,8 @@ class _ChatRoomState extends State<ChatRoom> {
         body: InkWell(
           splashColor: Colors.transparent,
           onTap: () {
+            // when pressing any part of the screen the focus is being
+            // unfocused from the text field
             FocusScope.of(context).requestFocus(FocusNode());
           },
           child: SizedBox(
@@ -144,6 +146,8 @@ class _ChatRoomState extends State<ChatRoom> {
                 Expanded(
                   child: SizedBox(
                     width: screenWidth * 1,
+                    //create a scroll view that is responsible for rendering
+                    // the messages between the users
                     child: SingleChildScrollView(
                       reverse: true,
                       child: chatRoom.chat.isNotEmpty
@@ -177,16 +181,19 @@ class _ChatRoomState extends State<ChatRoom> {
     );
   }
 
-  //we create the chat room between the 2 users, the id for the document is the combination of the id of the 2 users
   Future<void> createChatRoom() async {
     List chat = [];
     List chatRooms = [];
+    //we create the chat room between the 2 users, the id for the document is
+    // the combination of the id of the 2 users
     await DatabaseService.fromDatabaseServiceChatRooms(
             chatId: widget.activeUser.uid + widget.secondaryUser.uid)
         .updateChatRoomData(chat)
         .then((value) => setState(() {
+      //after the creation of the room we set the variables to their
+      // appropriate values
               roomExists = true;
-              chatRoomId = widget.chatRoomId;
+              //chatRoomId = widget.chatRoomId;
               chatRoomId = widget.activeUser.uid + widget.secondaryUser.uid;
             }));
     chatRooms.addAll(widget.activeUser.chatRooms);
@@ -194,6 +201,7 @@ class _ChatRoomState extends State<ChatRoom> {
       'id': widget.activeUser.uid + widget.secondaryUser.uid,
       'secondaryUser': widget.secondaryUser.uid
     });
+    //update both users providing them with the chat room information
     await DatabaseService(uid: widget.activeUser.uid).updateUserData(
         widget.activeUser.name,
         widget.activeUser.email,
@@ -215,6 +223,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   void manageMessageData(chatRoom, time) {
     setState(() {
+      //format the text
       chatText = clearChatTextWhiteSpace(chatText);
     });
     if (chatText.isNotEmpty) {
@@ -238,11 +247,15 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   getChatRoomCollection() {
+    //if the ChatRoomScreen is being called by the HomeScreen, the constructor
+    // will definitely contain a valid chatRoomId since the room already exists
     if (widget.chatRoomId.isNotEmpty) {
       return FirebaseFirestore.instance
           .collection('chatRoom')
           .doc(widget.chatRoomId)
           .snapshots();
+      //if the active user has a chat room that is being shared with the other
+      // user, the chat room definitely exists
     } else if (widget.activeUser.chatRooms.indexWhere((element) =>
             element['secondaryUser'] == widget.secondaryUser.uid) !=
         -1) {
@@ -253,11 +266,15 @@ class _ChatRoomState extends State<ChatRoom> {
           .collection('chatRoom')
           .doc(widget.activeUser.chatRooms[index]['id'])
           .snapshots();
+      //if roomExists is true, it means that during this session the chat room
+      // has been created
     } else if (roomExists) {
       return FirebaseFirestore.instance
           .collection('chatRoom')
           .doc(chatRoomId)
           .snapshots();
+      //if the roomExists is false, the chat room does not exist yet and
+      // createChatRoom is being called
     } else {
       createChatRoom();
     }

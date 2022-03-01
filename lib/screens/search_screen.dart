@@ -38,6 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     searchBar(screenWidth, screenHeight),
                   ],
                 ),
+                // if the user starts searching for other users the showMatchingUsers is being called
                 searching
                     ? showMatchingUsers()
                     : const SizedBox(),
@@ -64,10 +65,14 @@ class _SearchScreenState extends State<SearchScreen> {
             onChanged: (text) {
               setState(() {
                 searchUser = text;
+                //if the searchUser string is empty stop searching for users
+
                 if (searchUser == '') {
                   searching = false;
                 } else {
+                  //trim the whitespace before and after the text
                   searchUser=clearChatTextWhiteSpace(searchUser);
+                  //after trimming the text if the text is not empty look for users
                   if (searchUser!='') {
                     searching = true;
                   }
@@ -101,6 +106,8 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+
+  //look for any user that contains the string that is being typed by the user
  Widget showMatchingUsers() {
     return Expanded(
       child: SizedBox(
@@ -132,7 +139,8 @@ class _SearchScreenState extends State<SearchScreen> {
         child: TextButton(
           onPressed: () {
             FocusScope.of(context).unfocus();
-            //pass both the active user and the user that the chat room is being shared with
+            //pass both the active user and the user that the chat room is
+            // being shared with
             Navigator.push(
               context,
               MaterialPageRoute(

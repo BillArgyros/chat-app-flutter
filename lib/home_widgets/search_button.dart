@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../screens/search_screen.dart';
 
+
+//a button that redirects the user to the search screen
 Widget searchButton(
     context, screenWidth, screenHeight, userList, activeUser) {
   return Container(

@@ -6,6 +6,7 @@ chatList(UserData activeUser, List<UserData> userList) {
   return ListView.builder(
     itemCount: activeUser.chatRooms.length,
     itemBuilder: (context, index) {
+      // find the user that shares the chat room with the current active user
       var userIndex = userList.indexWhere(
               (element) =>
           element.uid ==
@@ -17,7 +18,8 @@ chatList(UserData activeUser, List<UserData> userList) {
         child: Card(
           child: TextButton(
             onPressed: () {
-              //pass both the active user and the user that the chat room is being shared with
+              //pass both the active user and the user that the chat room is
+              // being shared with
               Navigator.push(
                 context,
                 MaterialPageRoute(

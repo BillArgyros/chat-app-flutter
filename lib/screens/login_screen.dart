@@ -25,17 +25,17 @@ class _LoginScreenState extends State<LoginScreen> {
     var screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: !loading
-          ? Scaffold(
+      home:  Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: const Color.fromRGBO(229, 229, 229, 1),
               body: Stack(
                 children: [
                   CustomPaint(
-                    painter: Chevron(screenHeight: screenHeight, screenWidth: screenWidth),
+                    painter: Chevron(
+                        screenHeight: screenHeight, screenWidth: screenWidth),
                     child: SizedBox(
-                      width: screenWidth*1,
-                      height: screenHeight*0.5,
+                      width: screenWidth * 1,
+                      height: screenHeight * 0.5,
                     ),
                   ),
                   Padding(
@@ -53,18 +53,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: SizedBox(
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.5,
-                      child: _card(screenWidth,screenHeight),
+                      child:  _card(screenWidth, screenHeight),
                     ),
                   ),
                 ],
               ),
-            )
-          : Loading(),
+            ),
     );
   }
 
-  Widget _card(double screenWidth, double screenHeight){
-   return Card(
+  Widget _card(double screenWidth, double screenHeight) {
+   return !loading?  Card(
       color: const Color.fromRGBO(229, 229, 229, 1),
       elevation: 10,
       child: Column(
@@ -72,16 +71,15 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
-            child: _textFieldEmail(
-                context, screenWidth, screenHeight),
+            child: _textFieldEmail(context, screenWidth, screenHeight),
           ),
-          _textFieldPassword(
-              context, screenWidth, screenHeight),
+          _textFieldPassword(context, screenWidth, screenHeight),
           SizedBox(
             width: screenWidth * 1,
             height: screenHeight * 0.02,
           ),
-          //if the user enters an invalid account the error is being updated and is being displayed
+          //if the user enters an invalid account the error is being updated
+          // and is being displayed
           Text(
             error,
             style: const TextStyle(color: Colors.red),
@@ -94,9 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text(
             'OR',
             style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.bold),
+                color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
           ),
           _createAccButton(screenWidth, screenHeight),
           SizedBox(
@@ -105,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ],
       ),
-    );
+    ) : Loading();
   }
 
   Widget _textFieldEmail(
@@ -119,9 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
           height: screenHeight * 0.06,
           child: TextFormField(
             onChanged: (text) => email = text,
-            decoration: const InputDecoration(
+            decoration:  const InputDecoration(
               contentPadding:
-              EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
               ),
@@ -156,8 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: visibility
                       ? const Icon(Icons.visibility)
                       : const Icon(
-                    Icons.visibility_off,
-                  ),
+                          Icons.visibility_off,
+                        ),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 10.0),
@@ -180,22 +176,26 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: const EdgeInsets.only(top: 0, bottom: 10),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.blueAccent,
+            color: Colors.red.shade800,
             borderRadius: BorderRadius.circular(32),
             boxShadow: const [BoxShadow(blurRadius: 4, offset: Offset(0, 1))]),
         width: screenWidth * 0.6,
         height: screenHeight * 0.05,
         child: TextButton(
           onPressed: () async {
-            //every time the login button is being pressed the error message resets
+            //every time the login button is being pressed the error message
+            // resets
             setState(() {
               error = '';
+              loading=true;
             });
-            //when the log in button is pressed the app contacts firebase and looks for a user with these credentials
+            //when the log in button is pressed the app contacts firebase and
+            // looks for a user with these credentials
             await _authServices.signInWithEmailAndPassword(email, password);
             // if there is no user the error message changes
             setState(() {
               error = 'Wrong email or password';
+              loading=false;
             });
           },
           child: const FittedBox(
@@ -213,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: const EdgeInsets.only(top: 10),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.blueAccent,
+            color: Colors.red.shade800,
             borderRadius: BorderRadius.circular(32),
             boxShadow: const [BoxShadow(blurRadius: 4, offset: Offset(0, 1))]),
         width: screenWidth * 0.6,

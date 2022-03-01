@@ -9,10 +9,10 @@ import '../home_widgets/user_data_manager.dart';
 import '../models/user_model.dart';
 import '../services/authentication.dart';
 import 'package:provider/provider.dart';
-import 'chat_room_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -43,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       final data = snapshot.data!;
                       //store all the users
                       userList = createUserList(data);
-                      //find the active within the user list and create a new object with the user information
+                      //find the active within the user list and create a new
+                      // object with the user information
                       var activeUserIndex = userList
                           .indexWhere((element) => element.uid == user.uid);
                       var activeUser = userList[activeUserIndex];
@@ -64,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                signOutButton(
-                                    context, screenWidth, screenHeight,_authServices),
+                                signOutButton(context, screenWidth,
+                                    screenHeight, _authServices),
                               ],
                             ),
                             Padding(
@@ -77,11 +78,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: SizedBox(
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
-                                  child: activeUser.chatRooms.isNotEmpty? chatList(activeUser,userList):
-                                       Padding(
-                                       padding: const EdgeInsets.only(bottom: 150.0),
-
-                                       child: Center(child: Text('No Active Chats',style: TextStyle(color: Colors.black.withOpacity(0.5)),))),
+                                  //create a list of all the chat rooms that
+                                  // the user is connected with
+                                  child: activeUser.chatRooms.isNotEmpty
+                                      ? chatList(activeUser, userList)
+                                      : Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 150.0),
+                                          child: Center(
+                                              child: Text(
+                                            'No Active Chats',
+                                            style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.5)),
+                                          ))),
                                 ),
                               ),
                             )
@@ -100,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Align(
                             alignment: Alignment.topRight,
-                            child: signOutButton(
-                                context, screenWidth, screenHeight,_authServices),
+                            child: signOutButton(context, screenWidth,
+                                screenHeight, _authServices),
                           ),
                         ],
                       );
@@ -111,6 +121,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 }

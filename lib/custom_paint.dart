@@ -15,7 +15,7 @@ class Chevron extends CustomPainter {
   void paint(Canvas canvas, Size size) {
 
     final Paint paint = Paint()
-      ..color = Colors.red.shade800;
+      ..color = const Color.fromARGB(253, 170, 5, 19);
 
     Path path = Path();
     path.moveTo(0, 0);

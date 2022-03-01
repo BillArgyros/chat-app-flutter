@@ -1,3 +1,4 @@
+import 'package:chat_app/loading.dart';
 import 'package:flutter/material.dart';
 import '../custom_paint.dart';
 import '../services/authentication.dart';
@@ -21,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   bool _validate = false;
+  bool loading=false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +63,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.55,
-                      child: _card(screenWidth,screenHeight),
+                      //returns a Widget of type Card which holds the text fields and the buttons
+                      child: !loading? _card(screenWidth,screenHeight):Loading(),
                     ),
                   ],
                 ),
               ),
+              //if the email is not properly formatted this message appears to inform the user
               Padding(
                 padding: const EdgeInsets.only(bottom: 50.0),
                 child: Align(
@@ -85,7 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _card(screenWidth,screenHeight){
-   return Card(
+   return !loading? Card(
       elevation: 10,
       color: const Color.fromRGBO(229, 229, 229, 1),
       child: Column(
@@ -96,6 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                   child: _textFieldName(
                       context, screenWidth, screenHeight)),
+              //if the validation process is active the application checks if
+              // the user credentials are valid. If they are not valid, an
+              //appropriate message informs the user
               _validate
                   ? _name.text.isEmpty
                   ? const Padding(
@@ -184,7 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           _logInButton(context, screenWidth, screenHeight),
         ],
       ),
-    );
+    ) : Loading();
   }
 
   Widget _textFieldName(
@@ -198,16 +205,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
           height: screenHeight * 0.06,
           child: TextFormField(
             controller: _name,
-            // validator: (text) =>
-            // text!.isEmpty ? '' :null,
             onChanged: (text) => name = text,
             decoration: const InputDecoration(
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
               ),
-              // errorStyle: TextStyle(
-              //   fontSize: 8,
-              // ),
               contentPadding:
                   EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               enabledBorder: OutlineInputBorder(
@@ -295,6 +297,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _signUpButton(context, screenWidth, screenHeight) {
+    //each time the user tries to sign up the validator becomes false, so that
+    //the validating messages will be invisible
     if (mounted) {
       setState(() {
         _validate = false;
@@ -304,31 +308,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.blueAccent,
+            color: Colors.red.shade800,
             borderRadius: BorderRadius.circular(32),
             boxShadow: const [BoxShadow(blurRadius: 4, offset: Offset(0, 1))]),
         width: screenWidth * 0.6,
         height: screenHeight * 0.05,
         child: TextButton(
           onPressed: () async {
-            //when the button is pressed, check the validity of the form
+            //when the button is pressed, check the validity of the data
             if (_name.text.isNotEmpty &&
                 _email.text.isNotEmpty &&
                 _password.text.length >= 6) {
-              List chatRooms = [];
+              //if the data are appropriately formatted, the user is being
+              //registered the an email and password
+              setState(() {
+                loading=true;
+              });
               dynamic result = await _authServices.registerWithEmailAndPassword(
-                  email, password, name, chatRooms);
-              //if the database fails to create a new user the error boolean becomes true and the user is being informed that the email is not proper
+                  email, password, name, []);
+              //if the database fails to create a new user the error boolean
+              // becomes true and the user is being informed that the email is not proper
               if (result == null) {
                 if (mounted) {
                   setState(() {
+                    loading=false;
                     error = true;
                   });
                 }
               } else {
+                //if the database creates the user the screen is popped
                 Navigator.pop(context);
               }
             } else {
+              //if the data are not properly formatted the validator becomes true
               if (mounted) {
                 setState(() {
                   _validate = true;
@@ -351,7 +363,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.blueAccent,
+            color: Colors.red.shade800,
             borderRadius: BorderRadius.circular(32),
             boxShadow: const [BoxShadow(blurRadius: 4, offset: Offset(0, 1))]),
         width: screenWidth * 0.6,
