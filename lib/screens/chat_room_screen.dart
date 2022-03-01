@@ -36,6 +36,8 @@ class _ChatRoomState extends State<ChatRoom> {
   final TextEditingController _controller = TextEditingController();
   var index = -1;
   bool roomExists = false;
+   UserData activeUser=UserData(email: '', uid: '', password: '', name: '', chatRooms: []);
+   UserData secondaryUser=UserData(email: '', uid: '', password: '', name: '', chatRooms: []);
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +222,7 @@ class _ChatRoomState extends State<ChatRoom> {
   Future<void> createChatRoom() async {
     List chat = [];
     List chatRooms = [];
-    //we create the chat room between the 2 users, the id for the document is
+    // we create the chat room between the 2 users, the id for the document is
     // the combination of the id of the 2 users
     await DatabaseService.fromDatabaseServiceChatRooms(
         chatId: widget.activeUser.uid + widget.secondaryUser.uid)
@@ -241,11 +243,12 @@ class _ChatRoomState extends State<ChatRoom> {
       'lastSender':'',
       'lastMessageTime':''
     });
+    activeUser.chatRooms=chatRooms;
     await DatabaseService(uid: widget.activeUser.uid).updateUserData(
         widget.activeUser.name,
         widget.activeUser.email,
         widget.activeUser.password,
-        chatRooms);
+        chatRooms).then((value) => widget.activeUser.chatRooms=chatRooms);
     chatRooms = [];
     chatRooms.addAll(widget.secondaryUser.chatRooms);
     chatRooms.add({
@@ -255,12 +258,12 @@ class _ChatRoomState extends State<ChatRoom> {
       'lastSender':'',
       'lastMessageTime':''
     });
-
+    secondaryUser.chatRooms=chatRooms;
     await DatabaseService(uid: widget.secondaryUser.uid).updateUserData(
         widget.secondaryUser.name,
         widget.secondaryUser.email,
         widget.secondaryUser.password,
-        chatRooms);
+        chatRooms).then((value) => widget.secondaryUser.chatRooms=chatRooms);
   }
 
   void manageMessageData(chatRoom, time) {
@@ -302,8 +305,7 @@ class _ChatRoomState extends State<ChatRoom> {
       } else {
         DatabaseService.fromDatabaseServiceChatRooms(chatId: chatRoomId)
             .updateChatRoomData(chatRoom.chat);
-        chatRooms=[];
-        chatRooms.addAll(widget.activeUser.chatRooms);
+        chatRooms.addAll(activeUser.chatRooms);
         index=chatRooms.indexWhere((element) => element['id']==chatRoomId);
         chatRooms[index]['lastMessage']=chatText;
         chatRooms[index]['lastSender']=widget.activeUser.uid;
@@ -314,7 +316,7 @@ class _ChatRoomState extends State<ChatRoom> {
             widget.activeUser.password,
             chatRooms);
         chatRooms=[];
-        chatRooms.addAll(widget.secondaryUser.chatRooms);
+        chatRooms.addAll(secondaryUser.chatRooms);
         index=chatRooms.indexWhere((element) => element['id']==chatRoomId);
         chatRooms[index]['lastMessage']=chatText;
         chatRooms[index]['lastSender']=widget.activeUser.uid;
