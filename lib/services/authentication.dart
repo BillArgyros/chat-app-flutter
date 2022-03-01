@@ -16,8 +16,8 @@ class AuthServices {
   }
 
   //register with email
-  Future registerWithEmailAndPassword(
-      String email, String password, String name) async {
+  Future registerWithEmailAndPassword(String email, String password,
+      String name, List<dynamic> chatRooms) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -25,7 +25,7 @@ class AuthServices {
 
       //create a new document for the user with the uid
       await DatabaseService(uid: user!.uid)
-          .updateUserData(name, email, password);
+          .updateUserData(name, email, password, chatRooms);
 
       return _userFromUserCredential(user);
     } catch (e) {

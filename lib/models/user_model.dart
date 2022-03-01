@@ -11,7 +11,8 @@ class UserData{
    String name;
    String email;
    String password;
+   List chatRooms;
 
-   UserData( { required this.email, required this.uid ,required this.password,required this.name});
+   UserData({required this.email, required this.uid ,required this.password,required this.name, required this.chatRooms});
 
 }
