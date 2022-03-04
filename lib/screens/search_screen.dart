@@ -158,7 +158,11 @@ class _SearchScreenState extends State<SearchScreen> {
               backgroundColor: Color.fromARGB(253, 170, 5, 19),
             ),
             title:
-            Text(widget.userList[index].name),
+           widget.userList[index].name.length>10? Text(
+               widget.userList[index].name.substring(0,10)+'...')
+                :
+            Text(
+                widget.userList[index].name),
           ),
         ),
       ),

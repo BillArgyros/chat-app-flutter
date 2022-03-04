@@ -10,6 +10,8 @@ import '../models/user_model.dart';
 import '../services/authentication.dart';
 import 'package:provider/provider.dart';
 
+import 'chat_room_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -56,15 +58,24 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0, left: 30),
-                                  child: Text(
-                                    'Welcome ' + userList[activeUserIndex].name,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0, left: 30),
+                                    child: activeUser.name.length > 10
+                                        ? Text(
+                                            'Welcome ' +
+                                                activeUser.name
+                                                    .substring(0, 9) +
+                                                '...',
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        : Text(
+                                            'Welcome ' + activeUser.name,
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          )),
                                 signOutButton(context, screenWidth,
                                     screenHeight, _authServices),
                               ],
@@ -74,14 +85,101 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: searchButton(context, screenWidth,
                                   screenHeight, userList, activeUser),
                             ),
+                            SizedBox(
+                              height: screenHeight * 0.13,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: userList.length,
+                                  itemBuilder: (context, index) {
+                                    List chatRooms = [];
+                                    chatRooms = activeUser.chatRooms;
+                                    var roomIndex = chatRooms.indexWhere(
+                                        (element) =>
+                                            element['secondaryUser'] ==
+                                            userList[index].uid);
+                                    var chatRoomId = '';
+                                    if (roomIndex == -1) {
+                                      chatRoomId = '';
+                                    } else {
+                                      chatRoomId = chatRooms[roomIndex]['id'];
+                                    }
+                                    return activeUser.uid != userList[index].uid
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ChatRoom(
+                                                            activeUser:
+                                                                activeUser,
+                                                            secondaryUser:
+                                                                userList[index],
+                                                            chatRoomId:
+                                                                chatRoomId),
+                                                  ),
+                                                );
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  const CircleAvatar(
+                                                    radius: 25.0,
+                                                    backgroundColor:
+                                                        Color.fromARGB(
+                                                            253, 170, 5, 19),
+                                                  ),
+                                                  Center(
+                                                    child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                top: 10.0),
+                                                        child: userList[index]
+                                                                    .name
+                                                                    .length >
+                                                                6
+                                                            ? Text(
+                                                                userList[index]
+                                                                        .name
+                                                                        .substring(
+                                                                            0,
+                                                                            6) +
+                                                                    '...',
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            12),
+                                                              )
+                                                            : Text(
+                                                                userList[index]
+                                                                    .name,
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        12))),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        : const SizedBox();
+                                  },
+                                ),
+                              ),
+                            ),
                             Expanded(
                               child: SizedBox(
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
                                   //create a list of all the chat rooms that
-                                  // the user is connected with
+                                  // the user is attached to
                                   child: activeUser.chatRooms.isNotEmpty
-                                      ? chatList(activeUser, userList)
+                                      ? chatList(screenWidth, screenHeight,
+                                          activeUser, userList)
                                       : Padding(
                                           padding: const EdgeInsets.only(
                                               bottom: 150.0),
@@ -94,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ))),
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       );

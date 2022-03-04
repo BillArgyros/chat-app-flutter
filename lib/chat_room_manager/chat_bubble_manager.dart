@@ -22,7 +22,7 @@ getChatBubbles(chatBubble, double screenWidth, double screenHeight,
                     width: 1,
                   )),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Text(
                   chatBubble['message'],
                   style: const TextStyle(fontSize: 18,color: Color.fromARGB(
@@ -61,7 +61,7 @@ getChatBubbles(chatBubble, double screenWidth, double screenHeight,
                     width: 1,
                   )),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Text(
                   chatBubble['message'],
                   style: const TextStyle(fontSize: 18),
