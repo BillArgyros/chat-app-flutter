@@ -87,89 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             SizedBox(
                               height: screenHeight * 0.13,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: userList.length,
-                                  itemBuilder: (context, index) {
-                                    List chatRooms = [];
-                                    chatRooms = activeUser.chatRooms;
-                                    var roomIndex = chatRooms.indexWhere(
-                                        (element) =>
-                                            element['secondaryUser'] ==
-                                            userList[index].uid);
-                                    var chatRoomId = '';
-                                    if (roomIndex == -1) {
-                                      chatRoomId = '';
-                                    } else {
-                                      chatRoomId = chatRooms[roomIndex]['id'];
-                                    }
-                                    return activeUser.uid != userList[index].uid
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10.0),
-                                            child: InkWell(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ChatRoom(
-                                                            activeUser:
-                                                                activeUser,
-                                                            secondaryUser:
-                                                                userList[index],
-                                                            chatRoomId:
-                                                                chatRoomId),
-                                                  ),
-                                                );
-                                              },
-                                              child: Column(
-                                                children: [
-                                                  const CircleAvatar(
-                                                    radius: 25.0,
-                                                    backgroundColor:
-                                                        Color.fromARGB(
-                                                            253, 170, 5, 19),
-                                                  ),
-                                                  Center(
-                                                    child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 10.0),
-                                                        child: userList[index]
-                                                                    .name
-                                                                    .length >
-                                                                6
-                                                            ? Text(
-                                                                userList[index]
-                                                                        .name
-                                                                        .substring(
-                                                                            0,
-                                                                            6) +
-                                                                    '...',
-                                                                style:
-                                                                    const TextStyle(
-                                                                        fontSize:
-                                                                            12),
-                                                              )
-                                                            : Text(
-                                                                userList[index]
-                                                                    .name,
-                                                                style: const TextStyle(
-                                                                    fontSize:
-                                                                        12))),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : const SizedBox();
-                                  },
-                                ),
-                              ),
+                              child: displayAvailableUsers(userList,activeUser,screenWidth,screenHeight),
                             ),
                             Expanded(
                               child: SizedBox(
@@ -216,6 +134,82 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   });
             }),
+      ),
+    );
+  }
+
+  displayAvailableUsers(userList,activeUser,screenWidth,screenHeight) {
+    //creates a horizontal list of all the available users
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: userList.length,
+        itemBuilder: (context, index) {
+          List chatRooms = [];
+          chatRooms = activeUser.chatRooms;
+          //checks if a chatroom tha is being shared by the 2 users exists
+          var roomIndex = chatRooms.indexWhere(
+                  (element) =>
+              element['secondaryUser'] ==
+                  userList[index].uid);
+          var chatRoomId = '';
+          if (roomIndex == -1) {
+            chatRoomId = '';
+          } else {
+            chatRoomId = chatRooms[roomIndex]['id'];
+          }
+          return activeUser.uid != userList[index].uid
+              ? Padding(
+            padding: const EdgeInsets.only(
+                left: 10.0),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ChatRoom(
+                            activeUser:
+                            activeUser,
+                            secondaryUser:
+                            userList[index],
+                            chatRoomId:
+                            chatRoomId),
+                  ),
+                );
+              },
+              child: SizedBox(
+                child: Column(
+                  children: [
+                     const Expanded(
+                       child: CircleAvatar(
+                         radius: 25.0,
+                         backgroundColor:
+                         Color.fromARGB(
+                             253, 170, 5, 19),
+                       ),
+                     ),
+                    //displays the name of the users and adjust its length
+                    Center(
+                      child: Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: userList[index].name.length > 6
+                                    ? Text(
+                                        userList[index].name.substring(0, 6) +
+                                            '...',
+                                        style: const TextStyle(fontSize: 12),
+                                      )
+                                    : Text(userList[index].name,
+                                        style: const TextStyle(fontSize: 12))),
+                          )
+                  ],
+                ),
+              ),
+            ),
+          )
+              : const SizedBox();
+        },
       ),
     );
   }
