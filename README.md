@@ -6,7 +6,7 @@ This project is a beta version of a simplified but functional chat application b
 
 The link below contains the apk of a beta version of the application. Currently the application can be run in Android devices.
 
-[APK](https://drive.google.com/file/d/1chYqIib5fpwXB_s1opcdMUgaxKAY9AEp/view?usp=sharing)
+[APK](https://drive.google.com/file/d/1afm1XZcPCzbWt42i53BQSe710dK3F-Jl/view?usp=sharing)
 
 ### How to use
 
